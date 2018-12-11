@@ -50,7 +50,7 @@ fws = 0.24; % structural weight fraction of the Take-Off Gross Weights
 DL = 35;	% disk loading (kg/m2) - disk loading can also be changed in the Iterative Process
 rotor = 'unducted';     % ducted or unducted - the unducted propeller requires a higher hover power but causes less drag in cruise
 
-np=0.4                  %efficiency - pc/np is the istalled power
+np=0.4;                 %efficiency - pc/np is the istalled power
 %% Equations and consideration based on the following paper:
 % W. Ng and A. Datta, "Development of Models for Electrochemical Power and
 % Sizing of Electric-VTOL Aircraft", AIAA SciTech Forum, 2018.
@@ -198,7 +198,7 @@ line(x,y);
 hold on; 
 
 %Pot�ncia de cruseiro / Mtow
-NR = 4                     %Number of rotors
+NR = 4;                    %Number of rotors
 Power_cruise_w = Pc(NR)*10^3/ Wgto(NR);
 x=[0 1000];
 y=[Power_cruise_w Power_cruise_w];
@@ -226,26 +226,26 @@ rear_engine_power = ydesign*Wgto(NR);
 
 %% Outputs
 % Rotor related outputs
-NR = 4                      % Select the number of rotors;
-FOM = FoM(NR)               % Rotor's Figure of Merit
+NR = 4                     ;% Select the number of rotors;
+FOM = FoM(NR)              ;% Rotor's Figure of Merit
 % Mass related outputs
-MTOW = Wgto(NR)/g           % Aircraft Gross Take-Off Mass (kg)
-Empty_mass = We(NR)/g       % Empty Mass (kg)
-Payload = Wpay(NR)/g        % Payload Mass(kg)
-Structural_mass = Ws(NR)/g	% Structural Mass (kg)
-Porpulsive = Wp(NR)/g       % Propulsive System Mass (kg)
-Fuel = Wfuel(NR)            % Fuel Mass (kg)
-Batteries = Wbat(NR)        % Mass of batteries (kg)
+MTOW = Wgto(NR)/g          ;% Aircraft Gross Take-Off Mass (kg)
+Empty_mass = We(NR)/g      ;% Empty Mass (kg)
+Payload = Wpay(NR)/g       ;% Payload Mass(kg)
+Structural_mass = Ws(NR)/g ;% Structural Mass (kg)
+Porpulsive = Wp(NR)/g      ;% Propulsive System Mass (kg)
+Fuel = Wfuel(NR)           ;% Fuel Mass (kg)
+Batteries = Wbat(NR)       ;% Mass of batteries (kg)
 
-Rotor_radius_vtol = r(NR)   %raio dos rotores (m)
-Installed_power_for_cruise_Kw = Pinst    %Pot�ncia requerida para cruseiro (kw)
+Rotor_radius_vtol = r(NR);  %raio dos rotores (m)
+Installed_power_for_cruise_Kw = Pinst;   %Pot�ncia requerida para cruseiro (kw)
 
-P_W=ydesign                 %design point
-W_S=xdesign                 %design point
+P_W=ydesign;                %design point
+W_S=xdesign;                %design point
 
-wing_area = Wgto(NR)/xdesign                             %�rea da asa
-rear_engine_power_Kw = (ydesign*Wgto(NR)*10^-3)          %Pot�ncia do motor traseiro (Kw)
-rear_engine_power_hp = rear_engine_power_Kw * 1.34102209 %Pot�ncia do motor traseiro (hp)
+wing_area = Wgto(NR)/xdesign;                            %�rea da asa
+rear_engine_power_Kw = (ydesign*Wgto(NR)*10^-3);         %Pot�ncia do motor traseiro (Kw)
+rear_engine_power_hp = rear_engine_power_Kw * 1.34102209;%Pot�ncia do motor traseiro (hp)
 
 
 %% 
@@ -253,10 +253,10 @@ rear_engine_power_hp = rear_engine_power_Kw * 1.34102209 %Pot�ncia do motor tr
 hcruise=164; %ft (50m)
 vcruiseft=98.4; %ft/s
 b=sqrt(AR*wing_area);
-mach=vcruiseft/(1036-0.0034*(hcruise-20000))
+mach=vcruiseft/(1036-0.0034*(hcruise-20000));
 sweep_angle_LE=0; %fig 4.12 cork
 lambda=0.43; %fig 4.10 corke com sweep_angle_LE=0 cork
-tc_max=0.1375 %fig 4.5 corke com M=0.09 mas aproximado porque � muito pequeno, nao tem valores (??)
+tc_max=0.1375; %fig 4.5 corke com M=0.09 mas aproximado porque � muito pequeno, nao tem valores (??)
 
 croot=(2*b)/(AR*(1+lambda));
 ctip=lambda*croot;
@@ -267,18 +267,18 @@ viscosidade_dinamica=1.789e-5;
 viscosidade_cinematica=viscosidade_dinamica/rho;     
 
 SwetS=1.977+0.52*tc_max;
-Rex=(Vc*cos(sweep_angle_LE)*cmean)/viscosidade_cinematica %sqrt(Rex)<1000 logo laminar
+Rex=(Vc*cos(sweep_angle_LE)*cmean)/viscosidade_cinematica; %sqrt(Rex)<1000 logo laminar
 
 Cf=1.328/sqrt(Rex); %0.455/((log10(Rex))^2.58*(1+0.144*mach^2)^0.65);
 xc=0.25;                                                   %%%%MUDAR ESTE VALOR!!!!!!!!!!!!!
 F=(1+0.6/xc*tc_max+100*tc_max^4)*(1.34*mach^0.18*(cos(sweep_angle_LE))^0.28);
 Q=1; %tabela 4.3
-CD0=Cf*F*Q*SwetS
+CD0=Cf*F*Q*SwetS;
 
 mach_ef=mach*cos(sweep_angle_LE);
 beta=sqrt(1-mach_ef^2);
 sweep_angle_tc=atan(tan(sweep_angle_LE)-xc*2*croot/b*(1-lambda));
-CLa=2*pi*AR/(2+sqrt(4+(AR*beta)^2*(1+(tan(sweep_angle_tc)^2/beta^2))))
+CLa=2*pi*AR/(2+sqrt(4+(AR*beta)^2*(1+(tan(sweep_angle_tc)^2/beta^2))));
 
 a_zerolift=-3*pi/180; %%%%% E ESTE VALOR
 
@@ -292,9 +292,16 @@ end
 hold off;
 %plot(alpha,CD);
 
-CLairfoil=MTOW*9.81/(0.5*rho*Vc^2*wing_area)
+CLairfoil=MTOW*9.81/(0.5*rho*Vc^2*wing_area);
 
 %% Tail sizing (Inverted V-Tail)
+
+% Previous values for variables
+% Tail half wing span = 913mm
+% Chords = 148mm
+% Half opening angle = 48.922deg
+% Peak height = 599.919mm
+% Boom distance = 688.234mm
 
 % Uniformize variable styles
 S = wing_area;
@@ -314,14 +321,14 @@ S_T = S_HT + S_VT;			% Total area of the V-Tail [m^2]
 nu = atan(sqrt(S_VT/S_HT));	% Angle between diagonal stabilizer and horizontal plane [rad]
 gamma_DA = pi - 2 * nu;		% Dihedral angle between both halves of the V-tail [rad]
 
-%d = 1.1;						% Distance between tails [m]
-%b_T = (d / sin(gamma_DA / 2));	% Given the distance d between the tails, we can get the total wingspan through trigonometry [m]
-%AR_T = b_T.^2 / S_T;			% Aspect ratio is therefore obtainable
-%lambda_T = 0.4;				% Historic data
+d = 0.688 * 2;						% Distance between tails [m]
+b_T = (d / sin(gamma_DA / 2));		% Given the distance d between the tails, we can get the total wingspan through trigonometry [m]
+AR_T = b_T.^2 / S_T;				% Aspect ratio is therefore obtainable
+lambda_T = 1;						% Historic data
 
-AR_T = 3;				% Historic data
-lambda_T = 0.4;			% Historic data
-b_T = sqrt(AR_T * S_T);	% Single wing wingspan [m]
+%AR_T = 12;				% Historic data
+%lambda_T = 0.4;			% Historic data
+%b_T = sqrt(AR_T * S_T);	% Single wing wingspan [m]
 
 c_root_T = 2 * S_T / (b_T * (1 + lambda_T));								% Root chord for the vertical stabilizer [m]
 c_tip_T = lambda_T * c_root_T;												% Tip chord for the vertical stabilizer [m]
@@ -343,4 +350,4 @@ F_T = (1 + 0.6 / xc_T * tc_max_T + 100 * tc_max_T^4) * (1.34 * M^0.18 * (cos(Del
 
 CD_0_T = Cf_T * F_T * Q_T * S_wet_T/S_T;
 
-
+disp("Done.");
