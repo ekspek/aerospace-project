@@ -4,13 +4,13 @@ clc
 clear
 
 %% Feasibility Design of a VTOL Aircraft
-% Allows to test different VTOL configurations, disk loadings, propulsive 
+% Allows to test different VTOL configurations, disk loadings, propulsive
 % systems, number of rotors, rotors' type, batteries, among others.
 
 %% Inputs
 % General Inputs
 g = 9.80665;            % Gravity acceleration (m/s2)
-Pmax = 10;               % Maximum installed power (kW)
+Pmax = 10;              % Maximum installed power (kW)
 PF = 1.5;               % Installed Power Factor (PF) (-) - 1 for minimal hover capability; 2.7 id a typical for Turboshaft engines (Ref. Ng and Datta, 2018)
 T_W = 1.3;              % Thrust-to-weight ratio [1.2 - 1.5], Ref. Raymer
 rho = 1.225;            % Air Density (kg/m3)
@@ -26,7 +26,7 @@ Ebat = 165;     % energy specific density (W.h/kg) - Li-Ion batteries (Current S
 Ebat_r = 0.1;   % batteries reserve (-) - 20% of reserve
 
 % Electric Motors related inputs (Assumptions)
-PWe = 4.5;      % Power to weight ratio (kW/kg) 
+PWe = 4.5;      % Power to weight ratio (kW/kg)
 % Combustion Engine related inputs (Assumptions)
 SFC = 0.600;
 %SFC = 0.4*0.45359237;	% Specific Fuel Consumption (kg/(hp.hr)) [0.4-0.5] lb/(hp*hr)
@@ -61,12 +61,12 @@ np=0.4;                 %efficiency - pc/np is the istalled power
 %% Test Different number of rotors (NR)
 for j = 1:41
     NR = 1 + (40-1)*(j-1)/40;
-    
+
     error = 1;
     FoM(j) = 0.6;	% Initial guess for the Figure of Merit (FoM)
     FoM0 = FoM(j);
     while (error > 0.001)
-        
+
         %% Step 1 - First estimate of the Gross Take-Off Weight (Wgto)
         FoM(j) = FoM0;	% (-) Initial guess for the Figure of Merit (FoM)
         if strcmpi(rotor,'ducted')
@@ -82,7 +82,7 @@ for j = 1:41
         % Blade Mean lift coefficient - Hover Performance (Johnson, 2013)
         Ct = DL*g/(rho*Vtip*Vtip);      % (-)
         FoM(j) = 1/(ki+(3/4)*cd0/(6*ki*sqrt(Ct/2)*Ct/s)); % (-)
-        
+
         %% Step 3 - Power required for cruise
         % Power @ cruise
         cd0c=0.03;                      %conditions for cruise - 0.01 - 0.02, assumed 0.03 due to high drag
@@ -90,50 +90,50 @@ for j = 1:41
         k=1/(pi*AR*0.8);
         L_D = 0.94*(1/(2*sqrt(cd0c*k))); %empirical formula for the L/D
         Pc(j) = (Wgto(j)*Vc/L_D)/1000;     %(kW)
-        
+
         %% Step 4 - Estimate structural weight from statistical databases
         Ws(j) = fws*Wgto(j); % (N)
-        
+
         %% Step 5 - Estimate engine/motor weight based on power installed
         % For a Turboshaft propulsive system (including rotors)
         %HPh = Pmax*1.34102209;             % (hp)
         %Wp(j) = 1.8*HPh^(.9)*0.45359237*g;	% (N)
-        
+
         % For a Turbogenerator sized for maximum power
         %Wr = 0;                             % (N), Rotors weight
         %Wpe(j) = Pmax*g/PWe;                % (N), Electric motors
         %Wpg(j) = Pmax*g/PWg;                % (N), Turbogenerator
         %Wp(j) = Wr + Wpe(j) + Wpg(j);       % (N), Propulsive System
-        
-        % For a Turbogenerator sized for cruise power   
-        Wr = (5*0.050)*g;                   % (N), Rotors weight  ainda ter� de ser calculado
+
+        % For a Turbogenerator sized for cruise power
+        Wr = (5*0.050)*g;                   % (N), Rotors weight  ainda terá de ser calculado
         Wpe(j) = Pmax*g/PWe;                % (N), Electric motors
         Wpg(j) = Pc(j)/np*g/PWg;            % (N), Turbogenerator sized for the installed power
         Wp(j) = Wr + Wpe(j) + Wpg(j);       % (N), Propulsive System
-        
+
         %% Step 6 - Estimate fuel spent based on the endurance and specfic fuel consumption
         % Fully combustion system
         %Wfuel(j) = SFC*(Pc(j)*1.34102209*(Endurance+Reserve) + Ph(j)*1.34102209*HoverTime);  %(kg)
         %Wbat(j) = 0; %(kg)
-        
+
         % Hybrid-electric system
         HPc = Pc(j)/np*1.341;                             %INSTALLED POWER Pc/np
-       
+
         Wfuel(j) = SFC*(HPc*(Endurance+Reserve));          %(kg)
-       
-        %Wfuel(j)= Wgto(j)-(Wgto(j)/(exp(Endurance/((np/SFC)*(L_D)*(1/Vc))))) %o que mudei 
+
+        %Wfuel(j)= Wgto(j)-(Wgto(j)/(exp(Endurance/((np/SFC)*(L_D)*(1/Vc))))) %o que mudei
         %Wfuel(j)= Wgto(j)-(Wgto(j)/(exp((Endurance*9.81*SFC)/(L_D)))) %Breguet range equation
-        
-        
+
+
         Wbat(j) = Ph(j)*1000*HoverTime/(Ebat*(1-Ebat_r));	%(kg)
-        
+
         error = abs((FoM(j) - FoM0)/FoM(j));
         FoM0 = FoM(j);
     end
-    
+
     %% Step 7 - Estimate the empty weight
-    We(j) = (Wp(j) + Ws(j))/(1-fwo); % (N)  peso eletr�nicos
-    
+    We(j) = (Wp(j) + Ws(j))/(1-fwo); % (N)  peso eletrónicos
+
     %% Step 8 - Payload
     Wuse(j) = Wgto(j) - We(j);                  % (N)
     Wpay(j) = Wuse(j) - Wfuel(j)*g - Wbat(j)*g; % (N)
@@ -143,9 +143,9 @@ end
 syms x;
 
 %input data
-rho=1.225;     
+rho=1.225;
 vstall=25;          %m/s
-clmax=1.2;          %assumido, coef sustenta��o m�ximo   
+clmax=1.2;          %assumido, coef sustentação máximo
 cd0=0.03;
 AR=10;
 k=1/(pi*AR*0.8);    %0.8 nao deve ser
@@ -158,7 +158,7 @@ hold on;
 Pinst=Pc(NR)/np;
 
 %cruise speed -----------------------------------------------------------------------------------------------------------------------------
-v=30;                 
+v=30;
 cr=1/np*((rho*v^3*cd0)/(2*x)+((2*k)/(rho*v)*x));
 ezplot(cr, [0 1000 0 15]);
 
@@ -171,7 +171,7 @@ ezplot(clb, [0 1000 0 15]);
 
 hold on;
 
-%range------------------------------------------------------------------------------------------------------------------------------- 
+%range-------------------------------------------------------------------------------------------------------------------------------
 v=30;                           %assumido m/s
 ws=1/2*rho*v^2*sqrt(cd0/k);
 x=[ws ws];
@@ -195,9 +195,9 @@ x=[ws ws];
 y=[0 15];
 line(x,y);
 
-hold on; 
+hold on;
 
-%Pot�ncia de cruseiro / Mtow
+%Potência de cruseiro / Mtow
 NR = 4;                    %Number of rotors
 Power_cruise_w = Pc(NR)*10^3/ Wgto(NR);
 x=[0 1000];
@@ -237,26 +237,26 @@ Porpulsive = Wp(NR)/g      ;% Propulsive System Mass (kg)
 Fuel = Wfuel(NR)           ;% Fuel Mass (kg)
 Batteries = Wbat(NR)       ;% Mass of batteries (kg)
 
-Rotor_radius_vtol = r(NR);  %raio dos rotores (m)
-Installed_power_for_cruise_Kw = Pinst;   %Pot�ncia requerida para cruseiro (kw)
+Rotor_radius_vtol = r(NR);              %raio dos rotores (m)
+Installed_power_for_cruise_Kw = Pinst;  %Potência requerida para cruseiro (kw)
 
 P_W=ydesign;                %design point
 W_S=xdesign;                %design point
 
-wing_area = Wgto(NR)/xdesign;                            %�rea da asa
-rear_engine_power_Kw = (ydesign*Wgto(NR)*10^-3);         %Pot�ncia do motor traseiro (Kw)
-rear_engine_power_hp = rear_engine_power_Kw * 1.34102209;%Pot�ncia do motor traseiro (hp)
+wing_area = Wgto(NR)/xdesign;                               %Área da asa
+rear_engine_power_Kw = (ydesign*Wgto(NR)*10^-3);            %Potência do motor traseiro (Kw)
+rear_engine_power_hp = rear_engine_power_Kw * 1.34102209;   %Potência do motor traseiro (hp)
 
 
-%% 
+%%
 %Geometric Parameters
-hcruise=164; %ft (50m)
-vcruiseft=98.4; %ft/s
+hcruise=164;            %ft (50m)
+vcruiseft=98.4;         %ft/s
 b=sqrt(AR*wing_area);
 mach=vcruiseft/(1036-0.0034*(hcruise-20000));
-sweep_angle_LE=0; %fig 4.12 cork
-lambda=0.43; %fig 4.10 corke com sweep_angle_LE=0 cork
-tc_max=0.1375; %fig 4.5 corke com M=0.09 mas aproximado porque � muito pequeno, nao tem valores (??)
+sweep_angle_LE=0;       %fig 4.12 cork
+lambda=0.43;            %fig 4.10 corke com sweep_angle_LE=0 cork
+tc_max=0.1375;          %fig 4.5 corke com M=0.09 mas aproximado porque é muito pequeno, nao tem valores (??)
 
 croot=(2*b)/(AR*(1+lambda));
 ctip=lambda*croot;
@@ -264,7 +264,7 @@ cmean=2/3*croot*(1+lambda+lambda^2)/(1+lambda);
 
 %DRAG
 viscosidade_dinamica=1.789e-5;
-viscosidade_cinematica=viscosidade_dinamica/rho;     
+viscosidade_cinematica=viscosidade_dinamica/rho;
 
 SwetS=1.977+0.52*tc_max;
 Rex=(Vc*cos(sweep_angle_LE)*cmean)/viscosidade_cinematica; %sqrt(Rex)<1000 logo laminar
@@ -326,7 +326,7 @@ b_T = (d / sin(gamma_DA / 2));		% Given the distance d between the tails, we can
 AR_T = b_T.^2 / S_T;				% Aspect ratio is therefore obtainable
 lambda_T = 1;						% Historic data
 
-%AR_T = 12;				% Historic data
+%AR_T = 12;                 % Historic data
 %lambda_T = 0.4;			% Historic data
 %b_T = sqrt(AR_T * S_T);	% Single wing wingspan [m]
 
@@ -349,5 +349,10 @@ S_wet_T = S_T * (1.977 + 0.52 * tc_max_T);
 F_T = (1 + 0.6 / xc_T * tc_max_T + 100 * tc_max_T^4) * (1.34 * M^0.18 * (cos(Delta_LE_T))^0.28);
 
 CD_0_T = Cf_T * F_T * Q_T * S_wet_T/S_T;
+
+%% v-n diagram
+v_dive = 1.5 * Vc;                      % Dive (maximum) speed, 1.5 times the cruise speed
+n_min = -2; n_max = 5;                  % Load factors for a homebuilt aircraft
+n_aoa = (rho * SPEED / 2) * clmax / ws; % Maximum lift load (SPEED is going to be replaced)
 
 disp("Done.");
