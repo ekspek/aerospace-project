@@ -243,7 +243,7 @@ Installed_power_for_cruise_Kw = Pinst;  %Potência requerida para cruseiro (kw)
 P_W=ydesign;                %design point
 W_S=xdesign;                %design point
 
-wing_area = Wgto(NR)/xdesign;                               %Área da asa
+wing_area = Wgto(NR)/xdesign;                               %�?rea da asa
 rear_engine_power_Kw = (ydesign*Wgto(NR)*10^-3);            %Potência do motor traseiro (Kw)
 rear_engine_power_hp = rear_engine_power_Kw * 1.34102209;   %Potência do motor traseiro (hp)
 
@@ -351,8 +351,48 @@ F_T = (1 + 0.6 / xc_T * tc_max_T + 100 * tc_max_T^4) * (1.34 * M^0.18 * (cos(Del
 CD_0_T = Cf_T * F_T * Q_T * S_wet_T/S_T;
 
 %% v-n diagram
-v_dive = 1.5 * Vc;                      % Dive (maximum) speed, 1.5 times the cruise speed
-n_min = -2; n_max = 5;                  % Load factors for a homebuilt aircraft
-n_aoa = (rho * SPEED / 2) * clmax / ws; % Maximum lift load (SPEED is going to be replaced)
+CLmax = 1.4;
+v_dive = 1.5 * Vc;								% Dive (maximum) speed, 1.5 times the cruise speed
+n_min = -1.25; n_max = 3.1;						% Load factors for a homebuilt aircraft
 
+W = MTOW * g;
+x = [0:0.1:v_dive+1];
+n_aoa = S * rho * CLmax * x.^2 * 0.5 * 1/W;		% Maximum lift load
+v_a = sqrt(2 * W * n_max / (S * rho * CLmax));	% Velocity for high angle of attack and maximum load
+v_h = sqrt(2 * W * n_min / (S * rho * -CLmax));	% Velocity for high angle of attack and minimum load
+
+clf;
+axis([0 v_dive+1 n_min-1 n_max+1]);
+hold on;
+
+plot(v_a,n_max,'r*');				% Point A
+plot(v_dive,n_max,'r*');			% Point B
+plot(v_dive,0,'r*');				% Cruise velocity
+plot(Vc,n_min,'r*');				% Point F
+plot(v_h,n_min,'r*');				% Point H
+
+%plot(x,ones(size(x)) * n_min);		% Minimum load
+%plot(x,ones(size(x)) * n_max);		% Maximum load
+plot(x,n_aoa,x,-n_aoa);				% High angle of attack load limits
+plot([v_a v_dive], [n_max n_max]);
+plot([v_h Vc], [n_min n_min]);
+plot([Vc v_dive], [n_min 0]);
+plot([Vc v_dive], [n_min 0]);
+plot([v_dive v_dive], [0 n_max]);
+
+% Gust loads
+CLalpha = 4.58;		% rad/s
+mu = 2 * W / (rho * g * cmean * CLalpha);
+K = 0.88 * mu / (5.3 + mu);
+uhat = [66 50 25] * 0.3048;					% Different gust velocities from Corke, converted to m/s
+u = K * uhat;
+
+plot(x,1 + rho * CLalpha / (2 * W/S) * u(1) * x);
+plot(x,1 + rho * CLalpha / (2 * W/S) * u(2) * x);
+plot(x,1 + rho * CLalpha / (2 * W/S) * u(3) * x);
+plot(x,1 - rho * CLalpha / (2 * W/S) * u(1) * x);
+plot(x,1 - rho * CLalpha / (2 * W/S) * u(2) * x);
+plot(x,1 - rho * CLalpha / (2 * W/S) * u(3) * x);
+
+%% End code
 disp("Done.");
