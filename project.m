@@ -1,5 +1,4 @@
-
-
+% Aerospace Design projec - group 7
 clc
 clear
 
@@ -106,7 +105,7 @@ for j = 1:41
         %Wp(j) = Wr + Wpe(j) + Wpg(j);       % (N), Propulsive System
 
         % For a Turbogenerator sized for cruise power
-        Wr = (5*0.050)*g;                   % (N), Rotors weight  ainda terÃ¡ de ser calculado
+        Wr = (5*0.050)*g;                   % (N), Rotors weight  ainda terá de ser calculado
         Wpe(j) = Pmax*g/PWe;                % (N), Electric motors
         Wpg(j) = Pc(j)/np*g/PWg;            % (N), Turbogenerator sized for the installed power
         Wp(j) = Wr + Wpe(j) + Wpg(j);       % (N), Propulsive System
@@ -132,7 +131,7 @@ for j = 1:41
     end
 
     %% Step 7 - Estimate the empty weight
-    We(j) = (Wp(j) + Ws(j))/(1-fwo); % (N)  peso eletrÃ³nicos
+    We(j) = (Wp(j) + Ws(j))/(1-fwo); % (N)  peso eletrónicos
 
     %% Step 8 - Payload
     Wuse(j) = Wgto(j) - We(j);                  % (N)
@@ -145,7 +144,7 @@ syms x;
 %input data
 rho=1.225;
 vstall=25;          %m/s
-clmax=1.2;          %assumido, coef sustentaÃ§Ã£o mÃ¡ximo
+clmax=1.2;          %assumido, coef sustentação máximo
 cd0=0.03;
 AR=10;
 k=1/(pi*AR*0.8);    %0.8 nao deve ser
@@ -197,7 +196,7 @@ line(x,y);
 
 hold on;
 
-%PotÃªncia de cruseiro / Mtow
+%Potência de cruseiro / Mtow
 NR = 4;                    %Number of rotors
 Power_cruise_w = Pc(NR)*10^3/ Wgto(NR);
 x=[0 1000];
@@ -238,14 +237,14 @@ Fuel = Wfuel(NR)           ;% Fuel Mass (kg)
 Batteries = Wbat(NR)       ;% Mass of batteries (kg)
 
 Rotor_radius_vtol = r(NR);              %raio dos rotores (m)
-Installed_power_for_cruise_Kw = Pinst;  %PotÃªncia requerida para cruseiro (kw)
+Installed_power_for_cruise_Kw = Pinst;  %Potência requerida para cruseiro (kw)
 
 P_W=ydesign;                %design point
 W_S=xdesign;                %design point
 
-wing_area = Wgto(NR)/xdesign;                               %Ã?rea da asa
-rear_engine_power_Kw = (ydesign*Wgto(NR)*10^-3);            %PotÃªncia do motor traseiro (Kw)
-rear_engine_power_hp = rear_engine_power_Kw * 1.34102209;   %PotÃªncia do motor traseiro (hp)
+wing_area = Wgto(NR)/xdesign;                               %??rea da asa
+rear_engine_power_Kw = (ydesign*Wgto(NR)*10^-3);            %Potência do motor traseiro (Kw)
+rear_engine_power_hp = rear_engine_power_Kw * 1.34102209;   %Potência do motor traseiro (hp)
 
 
 %%
@@ -256,7 +255,7 @@ b=sqrt(AR*wing_area);
 mach=vcruiseft/(1036-0.0034*(hcruise-20000));
 sweep_angle_LE=0;       %fig 4.12 cork
 lambda=0.43;            %fig 4.10 corke com sweep_angle_LE=0 cork
-tc_max=0.1375;          %fig 4.5 corke com M=0.09 mas aproximado porque Ã© muito pequeno, nao tem valores (??)
+tc_max=0.1375;          %fig 4.5 corke com M=0.09 mas aproximado porque é muito pequeno, nao tem valores (??)
 
 croot=(2*b)/(AR*(1+lambda));
 ctip=lambda*croot;
@@ -395,4 +394,4 @@ plot(x,1 - rho * CLalpha / (2 * W/S) * u(2) * x);
 plot(x,1 - rho * CLalpha / (2 * W/S) * u(3) * x);
 
 %% End code
-disp("Done.");
+disp('Done.');
