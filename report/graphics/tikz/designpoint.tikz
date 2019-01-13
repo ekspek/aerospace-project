@@ -1,0 +1,21 @@
+\begin{tikzpicture}
+    \begin{axis}
+            [width = 0.7\linewidth,
+            xmin = 0, xmax = 1000,
+            ymin = 0, ymax = 15,
+            xlabel = {$\frac{W}{S}$},
+            ylabel = {$\frac{P}{W}$},
+            legend pos = outer north east,
+            cycle list = {red,blue,cyan,teal,orange,purple,violet,brown,darkgray,magenta},]
+        \addplot table [col sep = comma, x index = {0}, y index = {1}] {designpoint.csv};
+        \addplot table [col sep = comma, x index = {0}, y index = {2}] {designpoint.csv};
+        \addplot coordinates {(478.662,-1) (478.662,16)};
+        \addplot coordinates {(829.0673,-1) (829.0673,16)};
+        \addplot coordinates {(459.375,-1) (459.375,16)};
+        %\addplot coordinates {(-1,2.20528) (1001,2.20528)};
+        \addplot coordinates {(-1,5.5132) (1001,5.5132)};
+        \addplot [mark = o, color = red] coordinates {(458.875,8.91737)};
+        %\legend{Cruise Speed, Climb Angle, Range, Endurance, Stall Speed, Cruise Power, Installed Power, Design Point}
+        \legend{Cruise Speed, Climb Angle, Range, Endurance, Stall Speed, Installed Power, Design Point}
+    \end{axis}
+\end{tikzpicture}
