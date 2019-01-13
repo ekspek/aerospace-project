@@ -1,0 +1,42 @@
+% -- Bibliography
+\usepackage{csquotes}
+\usepackage{biblatex}
+\addbibresource{main.bib}
+
+% -- Extra math options
+%\usepackage{mathtools}
+\usepackage{siunitx}
+\DeclareSIUnit\rpm{rpm}
+\DeclareSIUnit\rps{rps}
+\DeclareSIUnit\foot{ft}
+\DeclareSIUnit\inch{in}
+\DeclareSIUnit\ounce{oz}
+\DeclareSIUnit\pound{lb}
+
+% -- Extra symbols
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage{cancel}
+
+% -- Glossaries
+\usepackage[toc,symbols]{glossaries-extra}
+\usepackage{tocbibind}
+
+% -- Additional table features
+\usepackage{booktabs}
+\usepackage{makecell}
+
+% --  Image and float settings
+\graphicspath{{graphics/}}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pdfpages}
+
+% -- Graphs and diagrams
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{arrows.meta,positioning,patterns}
+\pgfplotsset{compat=1.5, table/search path = {data}}
+
+\newcolumntype{C}{>{$}c<{$}}
